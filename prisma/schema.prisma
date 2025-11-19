@@ -1,0 +1,144 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  role      UserRole
+  name      String
+  avatar    String?
+  phone     String?
+  lastLogin DateTime?
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  teacher       Teacher?
+
+  @@map("users")
+}
+
+model Teacher {
+  id       String @id @default(cuid())
+  userId   String @unique
+  phone    String?
+  address  String?
+  joinDate DateTime @default(now())
+
+  // Relations
+  user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  subjects Subject[]
+  classes  Class[]
+
+  @@map("teachers")
+}
+
+model Student {
+  id           String    @id @default(cuid())
+  firstName    String
+  lastName     String
+  email        String?   @unique
+  phone        String?
+  address      String?
+  dateOfBirth  DateTime?
+  admissionNo  String    @unique
+  rollNo       String?
+  fatherName   String?
+  motherName   String?
+  guardianPhone String?
+  classId      String?
+  sectionId    String?
+  admissionDate DateTime @default(now())
+  isActive     Boolean   @default(true)
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  // Relations
+  class      Class?       @relation(fields: [classId], references: [id])
+  section    Section?     @relation(fields: [sectionId], references: [id])
+  attendance Attendance[]
+
+  @@map("students")
+}
+
+model Class {
+  id          String @id @default(cuid())
+  name        String @unique // e.g., "Grade 1", "Grade 2"
+  description String?
+  teacherId   String?
+
+  // Relations
+  teacher  Teacher?  @relation(fields: [teacherId], references: [id])
+  sections Section[]
+  students Student[]
+  subjects Subject[]
+
+  @@map("classes")
+}
+
+model Section {
+  id      String @id @default(cuid())
+  name    String // e.g., "A", "B", "C"
+  classId String
+
+  // Relations
+  class    Class     @relation(fields: [classId], references: [id], onDelete: Cascade)
+  students Student[]
+
+  @@unique([classId, name])
+  @@map("sections")
+}
+
+model Subject {
+  id        String @id @default(cuid())
+  name      String
+  code      String @unique
+  teacherId String?
+  classId   String?
+
+  // Relations
+  teacher Teacher? @relation(fields: [teacherId], references: [id])
+  class   Class?   @relation(fields: [classId], references: [id])
+
+  @@map("subjects")
+}
+
+model Attendance {
+  id        String          @id @default(cuid())
+  studentId String
+  date      DateTime
+  status    AttendanceStatus
+  notes     String?
+  createdAt DateTime        @default(now())
+  updatedAt DateTime        @updatedAt
+
+  // Relations
+  student Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  @@unique([studentId, date])
+  @@map("attendance")
+}
+
+enum UserRole {
+  ADMIN
+  TEACHER
+}
+
+enum AttendanceStatus {
+  PRESENT
+  ABSENT
+  LATE
+  EXCUSED
+}
+
