@@ -92,8 +92,8 @@ export default function StudentsPage() {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Students</h1>
-          <p className="text-gray-600">Manage student records</p>
+          <h1 className="text-3xl font-bold text-foreground">Students</h1>
+          <p className="text-muted-foreground">Manage student records</p>
         </div>
         <Button onClick={() => setShowForm(true)}>
           <Plus className="mr-2 h-4 w-4" />

@@ -68,8 +68,8 @@ export default async function DashboardPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
-        <p className="text-gray-600">Welcome to School Management System</p>
+        <h1 className="text-3xl font-bold text-foreground">Dashboard</h1>
+        <p className="text-muted-foreground">Welcome to School Management System</p>
       </div>
 
       {/* Stats Cards */}
@@ -77,15 +77,15 @@ export default async function DashboardPage() {
         {cards.map((card) => (
           <Card key={card.title}>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-gray-600">
+              <CardTitle className="text-sm font-medium text-muted-foreground">
                 {card.title}
               </CardTitle>
-              <div className={`p-2 rounded-lg ${card.bgColor}`}>
+              <div className={`p-2 rounded-lg ${card.bgColor} dark:bg-opacity-20`}>
                 <card.icon className={`h-5 w-5 ${card.color}`} />
               </div>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{card.value}</div>
+              <div className="text-2xl font-bold text-foreground">{card.value}</div>
             </CardContent>
           </Card>
         ))}
